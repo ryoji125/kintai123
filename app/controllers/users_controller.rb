@@ -1,6 +1,11 @@
 class UsersController < ApplicationController
-  before_action :logged_in_user, only: [:edit, :update]
+  before_action :logged_in_user, only: [:index, :edit, :update, :destroy]
   before_action :correct_user, only: [:edit, :update]
+  
+  def index
+    @users = User.paginate(page: params[:page]) 
+  end
+  
   def show
     @user = User.find(params[:id])
   end
@@ -38,6 +43,10 @@ class UsersController < ApplicationController
       params.require(:user).permit(:name,:email,:password,:password_confirmation)
     end
     
+    def admin_user
+      redirect_to(root_path) unless current_user.admin?
+    end
+    
     #beforeフィルター
     
     def logged_in_user
@@ -50,5 +59,11 @@ class UsersController < ApplicationController
     def correct_user
       @user = User.find(params[:id])
       redirect_to(root_path) unless @user == current_user
+    end
+    
+    def destroy
+    User.find(params[:id]).destroy
+    flash[:success] = "削除しました"
+    redirect_to users_path
     end
 end
