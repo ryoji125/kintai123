@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy]
   before_action :correct_user, only: [:edit, :update]
+  before_action :admin_user, onlt: [:destroy, :update_basic_info, :edit_basic_info]
   
   def index
     @users = User.paginate(page: params[:page]) 
@@ -8,6 +9,19 @@ class UsersController < ApplicationController
   
   def show
     @user = User.find(params[:id])
+    if params[:first_day].nil?
+      @first_day = Date.today.beginning_of_month
+    else
+      @first_day = Date.parse(params[:first_day])
+    end
+      @last_day = @first_day.end_of_month
+    (@first_day..@last_day).each do |day|
+      unless @user.attendances.any? {|attendance| attendance.worked_on == day}
+      record = @user.attendances.build(worked_on: day)
+      record.save
+      end
+    end
+    @dates = @user.attendances.where('worked_on >= ? and worked_on <= ?', @first_day, @last_day).order('worked_on')
   end
   def new
     @user = User.new # 新規作成されたUserオブジェクトをインスタンス変数に代入します
@@ -37,10 +51,28 @@ class UsersController < ApplicationController
     end
   end
   
+  def edit_basic_info
+    @user = User.find(params[:id])
+  end
+  
+  def update_basic_info
+    @user = User.find(params[:id])
+    if @user.update_attributes(basic_info_params)
+      flash[:success] = "更新に成功しました"
+      redirect_to @user
+    else
+      render "edit_basic_info"
+    end
+  end
+  
     private
     
     def user_params
-      params.require(:user).permit(:name,:email,:password,:password_confirmation)
+      params.require(:user).permit(:name,:email,:department,:password,:password_confirmation)
+    end
+    
+    def basic_info_params
+      params.require(:user).permit(:work_time, :basic_time)
     end
     
     def admin_user
