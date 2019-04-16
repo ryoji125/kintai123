@@ -6,5 +6,7 @@ Rails.application.routes.draw do
   delete "logout" => "sessions#destroy"
   get "edit_basic_info/:id" => "users#edit_basic_info", as: :basic_info
   patch "update_basic_info" => "users#update_basic_info"
-  resources :users
+  resources :users do
+    resources :attendances, only: :create
+  end
 end

@@ -22,6 +22,7 @@ class UsersController < ApplicationController
       end
     end
     @dates = @user.attendances.where('worked_on >= ? and worked_on <= ?', @first_day, @last_day).order('worked_on')
+    @worked_sum = @dates.where.not(started_at: nil).count
   end
   def new
     @user = User.new # 新規作成されたUserオブジェクトをインスタンス変数に代入します
