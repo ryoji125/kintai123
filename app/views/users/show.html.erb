@@ -32,8 +32,6 @@
       <td colspan="3">退社</td>
       <td rowspan="2">在社時間</td>
       <td rowspan="2">備考</td>
-      <td rowspan="2">残業指示</td>
-      <td rowspan="2">指示者</td>
     </tr>
     <tr>
       <td>時</td>
@@ -44,12 +42,19 @@
       <td></td>
     </tr>
     </thead>
-    
+    <%= link_to "勤怠を編集", edit_attendances_path(@user, @first_day), class: "btn btn-primary" %>
     <tbody>
       <% @dates.each do |day| %>
       <tr>
         <td><%= day.worked_on.to_s(:date) %></td>
-        <td><%= %w(日 月 火 水 木 金 土)[day.worked_on.wday] %></td>
+        <td><% if day.worked_on.wday == 0 %>
+              <span style="color:#ff0000;">日</span>
+            <% elsif day.worked_on.wday == 6 %>
+              <span style="color:blue;">土</span>
+            <% else %>
+              <%= %w{日 月 火 水 木 金 土} [day.worked_on.wday] %>
+            <% end%>
+                    </td>
         <td><%= day.started_at.to_s(:hour) if day.started_at.present? %></td>
         <td><%= day.started_at.to_s(:min) if day.started_at.present? %></td>
         <td>
@@ -71,9 +76,7 @@
           <% @total_seconds = @total_seconds.to_i + seconds %>
         <% end %>
         </td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><%= day.note %></td>
       </tr>
       <% end %>
     </tbody>
@@ -82,8 +85,6 @@
         <td colspan = "2">総合勤務時間 <%= format_basic_time(@user.basic_time).to_f * @worked_sum %></td>
         <td colspan = "6"></td>
         <td>在社時間合計:<%= working_times_sum(@total_seconds) unless @total_seconds.nil? %></td>
-        <td></td>
-        <td></td>
         <td></td>
       </tr>
     </tfoot>
