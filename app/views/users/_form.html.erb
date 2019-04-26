@@ -1,18 +1,18 @@
 <%= form_for(@user) do |f| %>
       <%= render "shared/errors_messages" %>
-      <%= f.label :name, "名前" %>
+      <%= f.label :name %>
       <%= f.text_field :name, class: 'form-control' %>
 
-      <%= f.label :email, "メールアドレス" %>
+      <%= f.label :email %>
       <%= f.email_field :email, class: 'form-control' %>
       
-      <%= f.label :department, "所属" %>
+      <%= f.label :department %>
       <%= f.text_field :department, class: 'form-control' %>
 
-      <%= f.label :password, "パスワード" %>
+      <%= f.label :password %>
       <%= f.password_field :password, class: 'form-control' %>
 
-      <%= f.label :password_confirmation, "パスワード確認" %>
+      <%= f.label :password_confirmation %>
       <%= f.password_field :password_confirmation, class: 'form-control' %>
 
       <%= f.submit yield(:button_text), class: "btn btn-primary" %>

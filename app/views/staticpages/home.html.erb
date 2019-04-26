@@ -1,6 +1,10 @@
+<% if logged_in? %>
+<% render current_user %>
+<% else %>
 <% provide(:title, "") %>
 <div class= "jumbotron center">
 <h1>勤怠システム</h1>
 <%= link_to "ログイン",login_path, class: "btn btn-primary btn-lg" %>
 <p>アカウント作成は<%= link_to "こちら", signup_url %>から</p>
 </div>
+<% end %>
