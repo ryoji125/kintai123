@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   
   def index
     @user = User.find(1)
-    @users = User.paginate(page: params[:page]) 
+     @users = User.paginate(page: params[:page]) 
   end
   
   def show

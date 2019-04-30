@@ -17,8 +17,6 @@ ActiveRecord::Schema.define(version: 20190408112444) do
     t.datetime "started_at"
     t.datetime "finished_at"
     t.string "note"
-    t.string "overtime"
-    t.string "instruction"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

@@ -1,5 +1,8 @@
 <% if logged_in? %>
-<% render current_user %>
+<div class= "jumbotron center">
+<h1> 勤怠システム </h1>
+<p> 今日も１日頑張りましょう　</p>
+<%= link_to "あなたの勤怠ページへ" , current_user %>
 <% else %>
 <% provide(:title, "") %>
 <div class= "jumbotron center">

@@ -1,0 +1,25 @@
+ja:
+  activerecord:
+    models:
+      user: ユーザー
+    attributes:
+      user:
+        id: ID
+        created_at: 登録日時
+        updated_at: 更新日時
+        birthday: 生年月日
+        email: メールアドレス
+        salon_id: サロン
+        password: パスワード
+        name: 名前
+        department: 所属
+        password_confirmation: パスワードの再確認
+  sessions:
+    new:
+      email: メールアドレス
+      password: パスワード
+  users:
+    edit_basic_info:
+      basic_time: 基本時間
+      work_time: 仕事時間
+        
