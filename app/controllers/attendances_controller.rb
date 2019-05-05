@@ -26,6 +26,7 @@ class AttendancesController < ApplicationController
     
     def update
         @user = User.find(params[:id])
+        @attendance = @user.attendances.find_by(worked_on: Date.today)
         if attendances_invaflid?
             attendances_params.each do |id, item|
                 attendance = Attendance.find(id)

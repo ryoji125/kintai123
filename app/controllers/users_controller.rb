@@ -5,11 +5,15 @@ class UsersController < ApplicationController
   
   def index
     @user = User.find(1)
-     @users = User.paginate(page: params[:page]) 
+     @users = User. paginate(page: params[:page])
+    if params[:name].present?
+    @users = @users.get_by_name params[:name]
+    end
   end
   
   def show
     @user = User.find(params[:id])
+    @attendance = @user.attendances.find_by(worked_on: Date.today)
     if @user == current_user || current_user.admin?
     @first_day = first_day(params[:first_day])
       @last_day = @first_day.end_of_month

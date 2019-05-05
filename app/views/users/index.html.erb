@@ -1,13 +1,15 @@
 <% provide(:title, '一覧') %>
 <h1>ユーザ一覧</h1>
-<p>ユーザー検索</p>
-<%= form_tag(users_path,:method => 'get') do %>
-  <%= text_field_tag :search %>
-  <%= submit_tag 'Search', :name => nil %>
-<% end %>
 
 <%= will_paginate %>
 
+<p>ユーザー検索</p>
+<div class = "name_serch">
+<%= form_tag(users_path, :method => 'get' ) do %>
+  <%= text_field_tag :name, params[:name] %>
+  <%= submit_tag '検索', :name => nil %>
+<% end %>
+</div>
 <ul class="users">
   <%= render @users %>
 </ul>
