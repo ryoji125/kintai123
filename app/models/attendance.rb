@@ -1,7 +1,6 @@
 class Attendance < ApplicationRecord
     belongs_to :user
     validate :started_at_none
-    validates :worked_on, presence: true
     validate :finished_at_fast
     def started_at_none
         if started_at.nil? && finished_at.present?
