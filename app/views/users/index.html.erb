@@ -1,6 +1,9 @@
 <% provide(:title, '一覧') %>
+<% if params[:name].present? %>
+<h1>検索結果</h1>
+<% else %>
 <h1>ユーザ一覧</h1>
-
+<% end %>
 <%= will_paginate %>
 
 <p>ユーザー検索</p>
