@@ -134,6 +134,72 @@ input, textarea, select, .uneditable-input {
   margin: auto;
   
 }
-.name_serch {
-  width: 150px;
+
+.btn-square {
+  display: inline-block;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  background: #668ad8;/*ボタン色*/
+  color: #FFF;
+  border-bottom: solid 4px #627295;
+  border-radius: 3px;
+}
+.ice {
+  width: 20%;
+    float: right;
+}
+.checkbox {
+  margin-top: -10px;
+  margin-bottom: 10px;
+  span {
+    margin-left: 20px;
+    font-weight: normal;
+  }
+}
+/* forms */
+#session_remember_me {
+  width: auto;
+  margin-left: 0;
+}
+
+.buttn {
+width:70px;/*検索ボタンの横幅*/ 
+height:50px;/*検索ボタンの縦幅*/ 
+position:absolute;/*検索ボタンの絶対位置*/  
+left:270px;/*検索ボタンの位置調整*/  
+top:0;
+border-radius:0 2px 2px 0;/*検索ボタンの角を丸める*/ 
+background:#7fbfff;/*検索ボタンの背景カラー*/ 
+border:none;/*検索ボタンの枠線を消す*/ 
+color:#fff;/*検索ボタンのテキストカラー*/ 
+font-weight:bold;/*検索ボタンのテキスト太字*/ 
+font-size:16px;/*検索ボタンのフォントサイズ*/ 
+}
+
+.input-group {
+  float: right;
+  list-style: none;
+  margin: 30px;
+}
+
+#nav-search {
+    width: 400px;
+    float: right;
+    padding-right: 70px;
+}
+.pagination {
+    display: inline-block;
+    padding-left: 20px;
+    margin: 20px 0;
+    border-radius: 4px;
+}
+
+#nameserch {
+  position:absolute; right:260px
+}
+
+.users {
+    light-style: none;
+    margin: 0;
+    padding-right: 100px;
 }

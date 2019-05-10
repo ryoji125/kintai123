@@ -5,7 +5,11 @@
     <%= link_to "勤怠管理システム", root_path, id: "logo" %>
     <nav>
       <ul class="nav navbar-nav navbar-right">
-        <li><%= link_to "ホーム", root_path %></li>
+        <li><% if @user.present? %>
+        <%= link_to "ホーム", current_user %>
+        <% else %>
+        <%= link_to "ホーム", root_path %></li>
+        <% end %>
         <% if logged_in? %>
           <li><% if current_user.admin? %>
             <%= link_to "ユーザ一覧", users_path %>
