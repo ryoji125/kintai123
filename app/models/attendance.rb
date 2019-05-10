@@ -1,5 +1,6 @@
 class Attendance < ApplicationRecord
     belongs_to :user
+    validates :worked_on, presence: true
     validate :started_at_none
     validate :finished_at_fast
     def started_at_none
