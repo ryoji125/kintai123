@@ -5,20 +5,26 @@
     <%= link_to "勤怠管理システム", root_path, id: "logo" %>
     <nav>
       <ul class="nav navbar-nav navbar-right">
-        <li><% if @user.present? %>
-        <%= link_to "ホーム", current_user %>
+        <li>
+        <% if @user.present? %>
+        <%= link_to "ホーム", current_user%>
         <% else %>
-        <%= link_to "ホーム", root_path %></li>
+        <%= link_to "ホーム", root_path %>
+        </li>
         <% end %>
         <% if logged_in? %>
-          <li><% if current_user.admin? %>
+            <li>
             <%= link_to "ユーザ一覧", users_path %>
             </li>
-          <li><% if @user.present? %>
-            <%= link_to "基本情報変更", basic_info_path(1) %>
-            <% end %>
-          <% end %>
-          </li> 
+            <li>
+              <%= link_to "出勤社員一覧", '#' %>
+            </li>
+            <li>
+              <%= link_to "拠点情報の修正", '#' %>
+            </li>
+            <li>
+              <%= link_to "基本情報の修正", '#' %>
+            </li>
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               アカウント <b class="caret"></b>

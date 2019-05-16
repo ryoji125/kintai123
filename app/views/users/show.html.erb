@@ -8,8 +8,11 @@
         &emsp;<%= @first_day.to_s(:year_month) %>　時間管理表&emsp;
         <%= link_to "→", user_path(params: {id: @user.id, first_day: @first_day.next_month }),
                          class: "btn btn-xs btn-primary" %></td>
-      <td>指定勤務時間: <%= format_basic_time(@user.work_time) %></td>
-      <td>基本時間: <%= format_basic_time(@user.basic_time) %></td>
+      <td>指定勤務開始時間: <%= 9.00 %> <!-- 今後変数で指定する --><br>
+      指定勤務終了時間:<%=format_basic_time(@user.work_time) %><!-- 指定勤務開始時に今後指定勤務時間を足した( +1時間休憩を足した数字にする -->
+      </td>
+      
+      <td colspan = "3">基本時間: <%= format_basic_time(@user.basic_time) %></td>
       <td>月の初日<%= @first_day.to_s(:date) %></td>
     </tr>
 
@@ -20,19 +23,30 @@
                       '未所属'
                       end %></td>
       <td>氏名：<%= @user.name %></td>
+      <td>コード</td>
+      <td>5555</td>
       <td>出勤日数: <%= @worked_sum %></td>
-      <td>月の末日<%= @last_day.to_s(:date) %></td>
+      <td>締め日<%= @last_day.to_s(:date) %></td>
     </tr>
   </table>
   <table class="table-bordered table-striped table-condensed">
     <thead>
     <tr>
-      <td rowspan="2">日付</td>
-      <td rowspan="2">曜日</td>
+      <td rowspan="3">残業申請</td>
+      <td rowspan="3">日付</td>
+      <td rowspan="3">曜日</td>
+      <td colspan="8">【実績】</td>
+      <td colspan="5">所定外勤務</td>
+    </tr>
+    <tr>
       <td colspan="3">出社</td>
       <td colspan="3">退社</td>
       <td rowspan="2">在社時間</td>
       <td rowspan="2">備考</td>
+      <td colspan="2">終了予定時間</td>
+      <td rowspan="2">時間外時間</td>
+      <td rowspan="2">業務処理内容</td>
+      <td rowspan="2">指示者確認㊞</td>
     </tr>
     <tr>
       <td>時</td>
@@ -41,12 +55,20 @@
       <td>時</td>
       <td>分</td>
       <td></td>
+      <td>時</td>
+      <td>分</td>
     </tr>
+    <p>【所属長承認認証のお知らせ】</p>
+    <p>【勤怠変更申請のお知らせ】</p>
+    <p>【残業申請のお知らせ】</p>
     </thead>
     <%= link_to "勤怠を編集", edit_attendances_path(@user, @first_day), class: "btn btn-primary" %>
+    <%= link_to "csv出力", '#' , class: "btn btn-primary" %><br>
+    <%= link_to "勤怠修正ログ(承認済)", '#' , class: "btn btn-primary" %>
     <tbody>
       <% @dates.each do |day| %>
       <tr>
+        <td><%= link_to "残業申請","#",class: "btn btn-primary" %></td>
         <td><%= day.worked_on.to_s(:date) %></td>
         <td><% if day.worked_on.wday == 0 %>
               <span style="color:#ff0000;">日</span>
@@ -78,6 +100,11 @@
         <% end %>
         </td>
         <td><%= day.note %></td>
+        <td><%= day.note %></td><!-- 仮置きここから　-->
+        <td><%= day.note %></td>
+        <td><%= day.note %></td>
+        <td><%= day.note %></td>
+        <td><%= day.note %></td><!-- ここまで -->
       </tr>
       <% end %>
     </tbody>
@@ -85,8 +112,10 @@
       <tr>
         <td colspan = "2">総合勤務時間 <%= format_basic_time(@user.basic_time).to_f * @worked_sum %></td>
         <td colspan = "6"></td>
-        <td>在社時間合計:<%= working_times_sum(@total_seconds) unless @total_seconds.nil? %></td>
         <td></td>
+        <td>在社時間合計:<%= working_times_sum(@total_seconds) unless @total_seconds.nil? %></td>
+        <td colspan = "5"></td>
+        <td>所属長承認</td>
       </tr>
     </tfoot>
     </table>
