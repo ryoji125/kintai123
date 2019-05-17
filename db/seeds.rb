@@ -1,8 +1,14 @@
+User.create!(name:  "上長A",
+             email: "email99@sample.com",
+             password:              "password",
+             password_confirmation: "password",
+             superior: true)
 User.create!(name:  "管理者",
              email: "email@sample.com",
              password:              "password",
              password_confirmation: "password",
              admin: true)
+
 Faker::Config.locale = :ja
 59.times do |n|
   name  = Faker::Name.name

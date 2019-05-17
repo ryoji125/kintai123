@@ -8,8 +8,8 @@
         &emsp;<%= @first_day.to_s(:year_month) %>　時間管理表&emsp;
         <%= link_to "→", user_path(params: {id: @user.id, first_day: @first_day.next_month }),
                          class: "btn btn-xs btn-primary" %></td>
-      <td>指定勤務開始時間: <%= 9.00 %> <!-- 今後変数で指定する --><br>
-      指定勤務終了時間:<%=format_basic_time(@user.work_time) %><!-- 指定勤務開始時に今後指定勤務時間を足した( +1時間休憩を足した数字にする -->
+      <td>指定勤務開始時間: <%= format_basic_time(@user.designated_work_start_time) %> <!-- 今後変数で指定する OK --><br>
+      指定勤務終了時間:<%=format_basic_time2(@user.designated_work_end_time) %><!-- 指定勤務開始時に今後指定勤務時間を足した( +1時間休憩を足した数字にする -->
       </td>
       
       <td colspan = "3">基本時間: <%= format_basic_time(@user.basic_time) %></td>

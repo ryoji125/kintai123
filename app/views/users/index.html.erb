@@ -5,7 +5,7 @@
 <h1>ユーザ一覧</h1>
 <% end %>
 <div><!-- csvについてのコード未完成 -->
-  <%= form_tag signup_path, method: :get, multipart: true do |f| %>
+  <%= form_tag "#", method: :post, multipart: true do |f| %>
     <div class="search_item">
       <%= text_field_tag 'filename',"", id: "filename", disabled: true %>
       <%= file_field_tag 'emails_file', id: "file_input", style: "display: none;", onchange: "file_selected($(this));" %>
