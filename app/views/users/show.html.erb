@@ -24,7 +24,7 @@
                       end %></td>
       <td>氏名：<%= @user.name %></td>
       <td>コード</td>
-      <td>5555</td>
+      <td></td>
       <td>出勤日数: <%= @worked_sum %></td>
       <td>締め日<%= @last_day.to_s(:date) %></td>
     </tr>
@@ -63,7 +63,7 @@
     <p>【残業申請のお知らせ】</p>
     </thead>
     <%= link_to "勤怠を編集", edit_attendances_path(@user, @first_day), class: "btn btn-primary" %>
-    <%= link_to "csv出力", '#' , class: "btn btn-primary" %><br>
+    <%= link_to "CSV出力", user_path(format: :csv), class: "btn btn-primary" %><br>
     <%= link_to "勤怠修正ログ(承認済)", '#' , class: "btn btn-primary" %>
     <tbody>
       <% @dates.each do |day| %>

@@ -5,8 +5,8 @@ class UsersController < ApplicationController
   require 'rounding'
   
   def index
-    @user = User.find(1)
-    @users = User. paginate(page: params[:page]).order(id: :asc)
+    @user = User.find(2)
+    @users = User.paginate(page: params[:page]).order(id: :asc)
     if params[:name].present?
     @users = @users.get_by_name params[:name]
     end
@@ -50,7 +50,7 @@ class UsersController < ApplicationController
   
   def update
     @user = User.find(params[:id])
-    if @user.update_attributes(user_params)
+    if @user.update_attributes(user_params) || admin_user
       flash[:success] = "更新に成功しました"
       redirect_to @user
     else
@@ -98,7 +98,7 @@ class UsersController < ApplicationController
     
     def correct_user
       @user = User.find(params[:id])
-      redirect_to(root_path) unless @user == current_user || admin_user
+      redirect_to(root_path) unless @user == current_user || current_user.admin?
     end
   
     def admin_user
