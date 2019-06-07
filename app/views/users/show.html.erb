@@ -9,16 +9,16 @@
         <%= link_to "→", user_path(params: {id: @user.id, first_day: @first_day.next_month }),
                          class: "btn btn-xs btn-primary" %></td>
       <td>指定勤務開始時間: <%= format_basic_time(@user.designated_work_start_time) %> <!-- 今後変数で指定する OK --><br>
-      指定勤務終了時間:<%=format_basic_time2(@user.designated_work_end_time) %><!-- 指定勤務開始時に今後指定勤務時間を足した( +1時間休憩を足した数字にする -->
+      指定勤務終了時間:<%=format_basic_time(@user.designated_work_end_time) %><!-- 指定勤務開始時に今後指定勤務時間を足した( +1時間休憩を足した数字にする -->
       </td>
       
-      <td colspan = "3">基本時間: <%= format_basic_time(@user.basic_time) %></td>
+      <td colspan = "3">基本時間: <%= format_basic_time(@user.basic_work_time) %></td>
       <td>月の初日<%= @first_day.to_s(:date) %></td>
     </tr>
 
     <tr>
-      <td>所属:<%= if @user.department.present?
-                      @user.department
+      <td>所属:<%= if @user.affiliation.present?
+                      @user.affiliation
                       else
                       '未所属'
                       end %></td>
@@ -63,7 +63,7 @@
     <p>【残業申請のお知らせ】</p>
     </thead>
     <%= link_to "勤怠を編集", edit_attendances_path(@user, @first_day), class: "btn btn-primary" %>
-    <%= link_to "CSV出力", user_path(format: :csv), class: "btn btn-primary" %><br>
+    <%= link_to "CSV出力", user_path(@user, params:{first_day: @first_day },format: :csv), class: "btn btn-primary" %><br>
     <%= link_to "勤怠修正ログ(承認済)", '#' , class: "btn btn-primary" %>
     <tbody>
       <% @dates.each do |day| %>
@@ -110,7 +110,7 @@
     </tbody>
     <tfoot>
       <tr>
-        <td colspan = "2">総合勤務時間 <%= format_basic_time(@user.basic_time).to_f * @worked_sum %></td>
+        <td colspan = "2">総合勤務時間 <%= format_basic_time(@user.basic_work_time).to_f * @worked_sum %></td>
         <td colspan = "6"></td>
         <td></td>
         <td>在社時間合計:<%= working_times_sum(@total_seconds) unless @total_seconds.nil? %></td>

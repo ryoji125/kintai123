@@ -5,11 +5,17 @@ class UsersController < ApplicationController
   require 'rounding'
   
   def index
-    @user = User.find(2)
+    @user = User.find_by(params[:id])
     @users = User.paginate(page: params[:page]).order(id: :asc)
     if params[:name].present?
     @users = @users.get_by_name params[:name]
     end
+  end
+  
+  def import
+    # fileはtmpに自動で一時保存される
+    User.import(params[:file])
+    redirect_to users_url
   end
   
   def show
@@ -28,6 +34,12 @@ class UsersController < ApplicationController
     @worked_sum = @dates.where.not(started_at: nil).count
     else
     redirect_to root_url
+    end
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "勤務情報.csv", type: :csv
+      end
     end
   end
   def new
@@ -63,6 +75,23 @@ class UsersController < ApplicationController
       redirect_to users_path
     end
   
+  def go_work
+  @now_users = []
+  @now_users_employee_number = []
+    User.all.each do |user|
+    if user.attendances.
+      any?{|day|
+       ( day.worked_on == Date.today &&
+         !day.started_at.blank? &&
+         day.finished_at.blank? )
+        }
+     @now_users.push(user.name)
+     @now_users_employee_number.push(user.employee_number)
+    end
+   end
+   @now_user = [@now_users, @now_users_employee_number].transpose
+  end
+#「出社」をクリックすると、「@now_users」の配列にユーザー名が格納される。
   def edit_basic_info
     @user = User.find(params[:id])
   end
@@ -80,7 +109,7 @@ class UsersController < ApplicationController
     private
     
     def user_params
-      params.require(:user).permit(:name,:email,:department,:password,:password_confirmation)
+      params.require(:user).permit(:name,:email,:affiliation,:password,:password_confirmation)
     end
     
     def basic_info_params

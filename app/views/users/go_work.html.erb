@@ -1,0 +1,24 @@
+<%#社員一覧のviewページ%>
+<% provide(:title, '出勤社員一覧') %>
+<h1>出勤中社員一覧</h1>
+<div>
+<table class="table-bordered table-striped table-condensed">
+    <tr>
+      <td>社員番号</td>
+      <td>名前</td>
+    </tr>
+    <%= @now_user %>
+　<%#controllerで定義した@now_usersをeachで回すだけで表示ができる。%>
+    <% @now_user.each do |name,employee_number| %>
+      <tr>
+        <td>
+          <%= employee_number %>
+         </td>
+         <td>
+          <%= name %>
+        </td>
+      </tr>
+    <% end %>
+      </tr>
+</table>
+</div>

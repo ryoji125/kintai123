@@ -7,8 +7,8 @@
     <%= form_for(@user, url: update_basic_info_path(params: {id: @user.id})) do |f| %>
       <%= render "shared/errors_messages", object: @user %>
 
-      <%= f.label t('.basic_time') %>
-      <%= f.time_field :basic_time, class: 'form-control' %>
+      <%= f.label t('.basic_work_time') %>
+      <%= f.time_field :basic_work_time, class: 'form-control' %>
 
       <%= f.label t('.work_time') %>
       <%= f.time_field :work_time, class: 'form-control' %>

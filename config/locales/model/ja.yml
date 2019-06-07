@@ -13,6 +13,7 @@ ja:
         password: パスワード
         name: 名前
         department: 所属
+        affiliation: 所属
         password_confirmation: パスワードの再確認
   sessions:
     new:
@@ -20,6 +21,6 @@ ja:
       password: パスワード
   users:
     edit_basic_info:
-      basic_time: 基本時間
+      basic_work_time: 基本時間
       work_time: 仕事時間
         
