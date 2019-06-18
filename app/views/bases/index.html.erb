@@ -1,0 +1,26 @@
+<% provide(:title,'拠点一覧') %>
+<h1>拠点一覧</h1>
+<%= link_to '追加', new_basis_path, remote: true, class: "btn btn-md btn-primary" %>
+<div>
+  <table class="table-bordered table-striped table-condensed">
+  <tr>
+    <td>拠点番号</td>
+    <td>拠点名</td>
+    <td>勤怠種類</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <% @bases.each do |base| %>
+  <tr>
+    <td><%= base.number %></td>
+    <td><%= base.name %></td>
+    <td><%= base.atype %></td>
+    <td><%= link_to "編集", edit_basis_path(base), remote: true, class: "btn btn-success" %></td>
+    <td><%= link_to "削除", destroy_base_path(base.id), method: :delete, 
+                         data: { confirm: "削除してよろしいですか？" } %> </td>
+  </tr>
+  <% end %>
+  </table>
+</div>
+<div class="modal fade" id="base-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"></div>
+<div id="edit-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

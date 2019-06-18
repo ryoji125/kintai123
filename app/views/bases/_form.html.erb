@@ -1,0 +1,27 @@
+<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+				<h4 class="modal-title">タイトル</h4>
+			</div>
+			  <div class="modal-body">
+			    <div class="row">
+				  <%= form_for(@base, remote:true) do |f| %>
+				
+			  	<%= f.label :number, class: "label-basic-info" %>
+          <%= f.text_field :number, class: "form-control" %>
+
+          <%= f.label :name, class: "label-basic-info" %>
+          <%= f.text_field :name, class: "form-control" %>
+
+          <%= f.label :atype, class: "label-basic-info" %>
+          <%= f.text_field :atype, class: "form-control" %>
+			    <div class="center">
+			      <%= f.submit class: "btn btn-primary"%>
+				  <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+			    </div>
+			    <% end %>
+		      </div>
+	      </div>
+	 </div>
+</div>	

@@ -40,6 +40,10 @@ class AttendancesController < ApplicationController
         end
     end
     
+    def edit_overwork
+        
+    end
+    
     private
     
     def attendances_params
