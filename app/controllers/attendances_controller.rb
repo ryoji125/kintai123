@@ -39,14 +39,31 @@ class AttendancesController < ApplicationController
             redirect_to edit_attendances_path(@user, params[:date])
         end
     end
+  def edit_overwork
+    @user = User.find(params[:user_id])
+    @attendance = @user.attendances.find(params[:id])
     
-    def edit_overwork
-        
+  end
+  
+  def update_overwork
+    @user = User.find(params[:user_id])
+    @attendance = @user.attendances.find(params[:id])
+    if @attendance.update_attributes(overwork_params)
+      flash[:success] = "残業申請をしました。"
+      redirect_to @user
+    else
+      flash[:danger] = "残業申請できませんでした。再度やり直してください。"
+      redirect_to @user
     end
+  end
     
     private
     
     def attendances_params
         params.permit(attendances: [:started_at, :finished_at, :note, :overtime, :instruction])[:attendances]
+    end
+    
+    def overwork_params
+      params.require(:attendances).permit(:overworkfinished_at, :overwork_note, :overcheck, :overcheker)
     end
 end
