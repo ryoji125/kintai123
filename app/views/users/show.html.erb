@@ -9,7 +9,7 @@
         <%= link_to "→", user_path(params: {id: @user.id, first_day: @first_day.next_month }),
                          class: "btn btn-xs btn-primary" %></td>
       <td>指定勤務開始時間: <%= format_basic_time(@user.designated_work_start_time) %> <!-- 今後変数で指定する OK --><br>
-      指定勤務終了時間:<%=format_basic_time(@user.designated_work_end_time) %><!-- 指定勤務開始時に今後指定勤務時間を足した( +1時間休憩を足した数字にする -->
+      指定勤務終了時間:<%= format_basic_time(@user.designated_work_end_time) %><!-- 指定勤務開始時に今後指定勤務時間を足した( +1時間休憩を足した数字にする -->
       </td>
       
       <td colspan = "3">基本時間: <%= format_basic_time(@user.basic_work_time) %></td>
@@ -58,17 +58,33 @@
       <td>時</td>
       <td>分</td>
     </tr>
-    <p>【所属長承認認証のお知らせ】</p>
-    <p>【勤怠変更申請のお知らせ】</p>
-    <p>【残業申請のお知らせ】</p>
+    <%= link_to "【所属長承認認証のお知らせ】","#",class: "btn btn-primary" %><br>
+    <%= link_to "【勤怠変更申請のお知らせ】","#",class: "btn btn-primary" %><br>
+    <% count_at_overwork = Attendance.where(overcheker: @user.name,  overworkcheck: nil).count %>
+    <% count_at_overwork1 = Attendance.where(overcheker: @user.name,  overworkcheck: "0").count %>
+    <% count_at_overwork2 = Attendance.where(overcheker: @user.name,  overworkcheck: "1",  overconfirmation: "申請中").count %>
+    <% count_at_overwork3 = Attendance.where(overcheker: @user.name,  overworkcheck: "1",  overconfirmation: "").count %>
+    <% count_at_overwork_sum = count_at_overwork + count_at_overwork1 + count_at_overwork2 + count_at_overwork3 %>
+    <% if count_at_overwork_sum > 0 %>
+    <%= link_to "【残業申請のお知らせ】",edit_work_path(@user), remote: true, class: "color2"  %>
+    <% else %>
+    <%= link_to "【残業申請のお知らせ】",edit_work_path(@user), remote: true, class: "color1" %>
+    <% end %>
+    <% if count_at_overwork_sum > 0 %>
+    <span style="color:#ff0000;"><%= count_at_overwork_sum %>件の通知があります。</span>
+    <% end %>
+    <br>
+    <div id="edit_work" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
     </thead>
     <%= link_to "勤怠を編集", edit_attendances_path(@user, @first_day), class: "btn btn-primary" %>
     <%= link_to "CSV出力", user_path(@user, params:{first_day: @first_day },format: :csv), class: "btn btn-primary" %><br>
-    <%= link_to "勤怠修正ログ(承認済)" , class: "btn btn-primary" %>
+    <%= link_to "勤怠修正ログ(承認済)","#" , class: "btn btn-primary" %>
     <tbody>
-      <% @dates.each do |day| %>
+      <% @dates.each_with_index do |day , i| %>
       <tr>
-        <td><%= link_to "残業申請", overwork_path, remote: true ,class: "btn btn-primary" %></td>
+        <td>
+        <%= link_to "残業申請", edit_overwork_user_attendance_path(@user,day), remote: true, class: "btn btn-primary" %>
+        <div id="edit_overwork" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
         <td><%= day.worked_on.to_s(:date) %></td>
         <td><% if day.worked_on.wday == 0 %>
               <span style="color:#ff0000;">日</span>
@@ -100,11 +116,38 @@
         <% end %>
         </td>
         <td><%= day.note %></td>
-        <td><%= day.note %></td><!-- 仮置きここから　-->
-        <td><%= day.note %></td>
-        <td><%= day.note %></td>
-        <td><%= day.note %></td>
-        <td><%= day.note %></td><!-- ここまで -->
+        <td><%= day.overworkfinished_at.to_s(:hour) if day.overworkfinished_at.present? %></td><!-- 仮置きここから　-->
+        <td><%= day.overworkfinished_at.to_s(:min) if day.overworkfinished_at.present? %></td>
+        <td>
+            <% if day.overworkfinished_at.present? %>
+              <% overwork =  (@user.designated_work_end_time.to_s(:hour) + @user.designated_work_end_time.to_s(:min)).to_i %>
+              <% overwork2 = (day.overworkfinished_at.to_s(:hour) + day.overworkfinished_at.to_s(:min)).to_i %>
+              <% if day.overcheck == "0" %>
+                <%= overwork_sum = ((overwork2 - overwork) /100.0).to_s %>
+              <% else %>
+                <%= overwork_sum = (((overwork2 + 2400 ) - overwork) /100.0).to_s %>
+              <% end %>
+            <% end %></td>
+                              
+        <td><%= day.overwork_note %></td>
+        <td><!-- 残業 --><%= if day.overworkfinished_at.present? && day.overcheker.present? && day.overworkcheck == "0"
+                              '残業申請中'
+                            elsif day.overworkfinished_at.present? && day.overcheker.present? && day.overworkcheck.nil?
+                              '残業申請中'
+                            elsif day.overworkfinished_at.present? && day.overworkcheck == "1" && day.overconfirmation == ""
+                              '残業申請中'
+                            elsif day.overworkfinished_at.present? && day.overworkcheck == "1" && day.overconfirmation == "申請中"
+                              '残業申請中'
+                            elsif day.overworkfinished_at.present? && day.overworkcheck == "1" && day.overconfirmation == "承認"
+                              '残業申請申請済'
+                            elsif day.overworkfinished_at.present? && day.overworkcheck == "1" && day.overconfirmation == "否認"
+                              '残業申請否認'
+                            else
+                              ''
+                            end %> 
+            <!-- 勤怠編集-->
+            
+            </td><!-- ここまで -->
       </tr>
       <% end %>
     </tbody>
@@ -120,5 +163,3 @@
     </tfoot>
     </table>
 </div>
-
-<div class="modal fade" id="overwork-edit-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"></div>
