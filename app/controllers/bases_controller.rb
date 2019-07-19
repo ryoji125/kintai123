@@ -1,8 +1,8 @@
 class BasesController < ApplicationController
     
-    def index
-      @bases = Base.all
-    end
+  def index
+    @bases = Base.all
+  end
     
   def new 
 	  @base = Base.new

@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   patch 'users/:id/attendances/:date/update', to: 'attendances#update', as: :update_attendances
   get "go_work", to: "users#go_work", as: :go_work
   delete "bases/:id", to: "bases#destroy", as: :destroy_base
+  get "users/:id/attendances/:id/index", to: "attendances#edit_work", as: :edit_work
+  patch "users/:id/attendances/:id/update_work", to: "attendances#update_work", as: :update_work
   resources :bases do
     member do
       get 'edit'
@@ -22,6 +24,7 @@ Rails.application.routes.draw do
       member do
         get  "edit_overwork"
         patch "update_overwork"
+
       end
     end
     collection { post :import }

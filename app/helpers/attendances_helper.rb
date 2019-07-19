@@ -40,4 +40,23 @@ module AttendancesHelper
     end
     return attendances
   end
+  def workupdate_invaflid?
+    workupdate = true
+    workupdate_params.each do |id, item|
+      if item[:overworkcheck].present?
+        next
+      elsif item[:overworkcheck].blank? || item[:overconfirmation] == ""
+      workupdate = false
+      break
+      elsif awd
+      workupdate = false
+      break
+      end
+    end
+    return workupdate
+  end
+  
+  def working_times2(designated_work_end_time, overworkfinished_at)
+     format("%.2f", ((designated_work_end_time - overworkfinished_at)))
+  end
 end

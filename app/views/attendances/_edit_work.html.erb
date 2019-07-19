@@ -1,0 +1,107 @@
+<% provide(:class_text, 'basic-info') %>
+
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h1 class="modal-title">残業承認</h1>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <!-- 残業申請時間が存在しているもの -->
+            <!-- チェックボックスがからか申請中か || -->
+            <!-- チェックボックスが入っていなくてなおかつ指示者確認が承認以外のものを表示する -->
+            <%= form_for(@user, url: update_work_path, method: :patch) do |f| %>
+            <% @users.each do |user| %>
+              <% attendances = Attendance.where(user_id: user.id) %>
+              <% attendances.each do |attendance| %>
+                <% if attendance.overcheker == @user.name %>
+                  <% if attendance.overworkfinished_at.present? %>
+                    <% if attendance.overworkcheck.nil? || attendance.overworkcheck == "0" || attendance.overconfirmation == "申請中" || attendance.overconfirmation == "" %>
+                      <%# if attendance.overworkcheck == "0" && attendance.overconfirmation == "承認" %>
+                        【<%= user.name %>からの残業申請】
+                      <% break %>
+                      <%# end %>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              <% end %><!-- ここでUsre.name終わり -->
+              <!-- ここからuserの勤怠 -->
+              <% attendances.each do |attendance| %>
+              <%= fields_for "attendances[]", attendance do |af| %>
+              <% if attendance.overcheker == @user.name %>
+                  <% if attendance.overworkfinished_at.present? %>
+                    <% if attendance.overworkcheck.nil? || attendance.overworkcheck == "0" || attendance.overconfirmation == "申請中" || attendance.overconfirmation == "" %>
+                      <%# if attendance.overworkcheck == "0" && attendance.overconfirmation == "承認" %>
+                      <table class="table-bordered table-striped table-condensed">
+                        <thead>
+                          <tr>
+                            <td>日付</td>
+                            <td>曜日</td>
+                            <td>終了予定時間</td>
+                            <td>指定勤務終了予定時間</td>
+                            <td>時間外時間</td>
+                            <td>業務処理内容</td>
+                            <td>指示者確認㊞</td>
+                            <td>変更</td>
+                            <td>勤怠を確認する</td>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td><%= attendance.worked_on.to_s(:date) %></td>
+                            <td><%= %w{日 月 火 水 木 金 土} [attendance.worked_on.wday] %></td>
+                            <td><%= format_basic_time(attendance.overworkfinished_at).to_s %></td>
+                            <td><%= format_basic_time(user.designated_work_end_time).to_s %></td>
+                            <td><% if attendance.finished_at.present? %>
+                                  <% overwork =  (attendance.finished_at.to_s(:hour) + attendance.finished_at.to_s(:min)).to_i %>
+                                  <% overwork2 = (attendance.overworkfinished_at.to_s(:hour) + attendance.overworkfinished_at.to_s(:min)).to_i %>
+                                  <% if attendance.overcheck == "0" %>
+                                    <%= overwork_sum = ((overwork2 - overwork) /100.0).to_s %>
+                                  <% else %>
+                                    <%= overwork_sum = (((overwork2 + 2400 ) - overwork) /100.0).to_s %>
+                                  <% end %>
+                                <% else %>
+                                <% overwork =  (user.designated_work_end_time.to_s(:hour) + user.designated_work_end_time.to_s(:min)).to_i %>
+                                <% overwork2 = (attendance.overworkfinished_at.to_s(:hour) + attendance.overworkfinished_at.to_s(:min)).to_i %>
+                                <% if attendance.overcheck == "0" %>
+                                  <%= overwork_sum = ((overwork2 - overwork) /100.0).to_s %>
+                                <% else %>
+                                  <%= overwork_sum = (((overwork2 + 2400 ) - overwork) /100.0).to_s %>
+                                <% end %>
+                                <% end %>
+                            </td>
+                            <td>
+                              <%= attendance.overwork_note %>
+                            </td>
+                            <td>
+                              <%= af.select :overconfirmation, [["申請中", "申請中"], ["承認", "承認"], ["否認", "否認"], ["", ""],] ,class:"form-control" %>
+                            </td>
+                            <td>
+                              <%= af.check_box :overworkcheck %>
+                            </td>
+                            <td>
+                              <%= link_to "確認", user, class: "btn btn-primary" %><!-- 確認を入れる -->
+                            </td>
+                          </tr>
+                          </tbody>
+                          </table>
+                        <%# end %><!-- 残業承認のend -->
+                      <% end %>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              <% end %>
+            <% end %>
+            <div class="modal-footer">
+            <%= f.submit "変更を送信する", class: "btn btn-primary" %>
+            <% end %>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

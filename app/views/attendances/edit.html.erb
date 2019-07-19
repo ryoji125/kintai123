@@ -11,6 +11,7 @@
              <td>退社</td>
              <td>在社時間</td>
              <td>備考</td>
+             <td>指示者確認㊞</td>
          </tr>
      </thead>
      <tbody>
@@ -35,6 +36,7 @@
                  <% end %>
              </td>
              <td><%= af.text_field :note, class:"form-control" %></td>
+             <td><%= af.collection_select :attendancecheck, User.where(superior: true), :id, :name, :include_blank => true %></td>
              </tr>
              <% end %>
             <% end %>
