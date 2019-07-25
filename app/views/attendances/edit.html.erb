@@ -9,6 +9,7 @@
              <td>曜日</td>
              <td>出社</td>
              <td>退社</td>
+             <td>翌日</td>
              <td>在社時間</td>
              <td>備考</td>
              <td>指示者確認㊞</td>
@@ -21,22 +22,25 @@
              <td><%= day.worked_on.to_s(:date) %></td>
              <td><%= %w{日 月 火 水 木 金 土}[day.worked_on.wday] %></td>
              <td><% if day.worked_on > Date.current %>
-              <%= af.time_field :started_at, :readonly => true, class: "form-control" %>
+              <%= af.time_field :attendances_started_at, :readonly => true, class: "form-control" %>
                <% else %>
-               <%= af.time_field :started_at, class: "form-control"  %>
+               <%= af.time_field :attendances_started_at, class: "form-control"  %>
                <% end %></td>
              <td> <% if day.worked_on > Date.current %>
-              <%= af.time_field :started_at, :readonly => true, class: "form-control" %>
+              <%= af.time_field :attendances_finished_at, :readonly => true, class: "form-control" %>
               <% else %>
-              <%= af.time_field :finished_at, class: "form-control" %>
+              <%= af.time_field :attendances_finished_at, class: "form-control" %>
               <% end %>
               </td>
-             <td><% if day.started_at.present? && day.finished_at.present? %>
-                 <%= working_times(day.started_at, day.finished_at) %>
+              <td><%= af.check_box :attendancecheck %></td>
+             <td><% if day.started_at.present? && day.attendances_finished_at.present? %>
+                 <%= working_times(day.attendances_started_at, day.attendances_finished_at) %>
                  <% end %>
              </td>
-             <td><%= af.text_field :note, class:"form-control" %></td>
-             <td><%= af.collection_select :attendancecheck, User.where(superior: true), :id, :name, :include_blank => true %></td>
+             <td><%= af.text_field :attendances_note, class:"form-control" %></td>
+             <td>
+              <%= af.collection_select :attendances_cheker, User.where.not(superior: false, name: @user.name), :name, :name, :include_blank => true %>
+              </td>
              </tr>
              <% end %>
             <% end %>

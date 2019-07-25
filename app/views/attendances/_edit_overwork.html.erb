@@ -29,8 +29,8 @@
                 <td><%= f.time_field :overworkfinished_at, class: "form-control" %></td>
                 <td><%= f.check_box :overcheck %></td>
                 <td><%= f.text_field :overwork_note, class:"form-control" %></td>
-                <td><%= f.collection_select :overcheker, User.where(superior: true), :name, :name %></td>
-              </tr>
+                <td><%= f.collection_select :overcheker, User.where.not(superior: false, name: @user.name), :name, :name %></td>
+              </tr></table>
             <div class="center">
               <%= f.submit yield(:button_text), class: "btn btn-primary btn-#{yield(:class_text)}" %>
               <button type="button" class="btn btn-default btn-<%= yield(:class_text) %>" data-dismiss="modal">

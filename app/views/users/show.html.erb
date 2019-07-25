@@ -58,17 +58,27 @@
       <td>時</td>
       <td>分</td>
     </tr>
-    <%= link_to "【所属長承認認証のお知らせ】","#",class: "btn btn-primary" %><br>
-    <%= link_to "【勤怠変更申請のお知らせ】","#",class: "btn btn-primary" %><br>
+    <%= link_to "【所属長承認認証のお知らせ】","#",class: "" %><br>
+    <% count_at_attendances_edit = Attendance.where(attendances_cheker: @user.name, attendances_check: nil).count %>
+    <% count_at_attendances_edit1 = Attendance.where(attendances_cheker: @user.name, attendances_check: "0").count %>
+    <% count_at_attendances_edit2 = Attendance.where(attendances_cheker: @user.name, attendances_check: "1",  attendances_confirmation: "申請中").count %>
+    <% count_at_attendances_edit3 = Attendance.where(attendances_cheker: @user.name, attendances_check: "1",  attendances_confirmation: "").count %>
+    <% count_at_attendances_edit_sum = count_at_attendances_edit + count_at_attendances_edit1 + count_at_attendances_edit2 + count_at_attendances_edit3 %>
+    <% if count_at_attendances_edit_sum > 0 %>
+    <span style="color:#ff0000;"><%= link_to "【勤怠変更申請のお知らせ】",attendances_edit_path(@user), remote: true, class: "color2" %><%= count_at_attendances_edit_sum %>件の通知があります。</span><br>
+    <% else %>
+    <p class = "color1">【勤怠変更申請のお知らせ】</p>
+    <% end %>
+    <div id="attendances_edit" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
     <% count_at_overwork = Attendance.where(overcheker: @user.name,  overworkcheck: nil).count %>
-    <% count_at_overwork1 = Attendance.where(overcheker: @user.name,  overworkcheck: "0").count %>
-    <% count_at_overwork2 = Attendance.where(overcheker: @user.name,  overworkcheck: "1",  overconfirmation: "申請中").count %>
-    <% count_at_overwork3 = Attendance.where(overcheker: @user.name,  overworkcheck: "1",  overconfirmation: "").count %>
+    <% count_at_overwork1 = Attendance.where(overcheker: @user.name, overworkcheck: "0").count %>
+    <% count_at_overwork2 = Attendance.where(overcheker: @user.name, overworkcheck: "1",  overconfirmation: "申請中").count %>
+    <% count_at_overwork3 = Attendance.where(overcheker: @user.name, overworkcheck: "1",  overconfirmation: "").count %>
     <% count_at_overwork_sum = count_at_overwork + count_at_overwork1 + count_at_overwork2 + count_at_overwork3 %>
     <% if count_at_overwork_sum > 0 %>
     <%= link_to "【残業申請のお知らせ】",edit_work_path(@user), remote: true, class: "color2"  %>
     <% else %>
-    <%= link_to "【残業申請のお知らせ】",edit_work_path(@user), remote: true, class: "color1" %>
+    <p class = "color1">【残業申請のお知らせ】</p>
     <% end %>
     <% if count_at_overwork_sum > 0 %>
     <span style="color:#ff0000;"><%= count_at_overwork_sum %>件の通知があります。</span>
@@ -94,8 +104,20 @@
               <%= %w{日 月 火 水 木 金 土} [day.worked_on.wday] %>
             <% end%>
                     </td>
-        <td><%= day.started_at.to_s(:hour) if day.started_at.present? %></td>
-        <td><%= day.started_at.floor_to(60*15).to_s(:min) if day.started_at.present? %></td>
+        <td><%#= day.started_at.to_s(:hour) if day.started_at.present? %>
+            <% if  day.attendances_started_at.present? && day.attendances_cheker.present? && day.attendances_check == "1" && day.attendances_confirmation == "承認" %>
+              <%=  day.attendances_started_at.to_s(:hour) %>
+            <% elsif day.started_at.present? %>
+              <%= day.started_at.to_s(:hour) %>
+            <% end %>
+            </td>
+        <td><%#= day.started_at.floor_to(60*15).to_s(:min) if day.started_at.present? %>
+            <% if day.attendances_started_at.present? && day.attendances_cheker.present? && day.attendances_check == "1" && day.attendances_confirmation == "承認" %> 
+              <%= day.attendances_started_at.to_s(:min) %>
+            <% elsif day.started_at.present? %>
+              <%= day.started_at.to_s(:hour) %>
+            <% end %>
+            </td>
         <td>
           <% if day.worked_on == Date.today && day.started_at.nil? %>
             <%= button_to "出社", user_attendances_path(@user), class: "btn btn-xs btn-primary" %>
@@ -109,11 +131,16 @@
           <% end %>
         </td>
         <td>
-          <% if day.started_at.present? && day.finished_at.present? %>
-          <%= working_times(day.started_at.floor_to(60*15), day.finished_at.floor_to(60*15)) %>
-          <% seconds = (day.finished_at - day.started_at).to_i %>
-          <% @total_seconds = @total_seconds.to_i + seconds %>
-        <% end %>
+          <%# if day.started_at.present? && day.finished_at.present? %>
+          <% if day.attendances_started_at.present? && day.attendances_cheker.present? && day.attendances_check == "1" && day.attendances_confirmation == "承認" %>
+            <%= working_times(day.attendances_started_at.floor_to(60*15), day.attendances_finished_at.floor_to(60*15)) %>
+            <% seconds = (day.attendances_finished_at - day.attendances_started_at).to_i %>
+            <% @total_seconds = @total_seconds.to_i + seconds %>
+          <% elsif day.started_at.present? && day.finished_at.present? %>
+            <%= working_times(day.started_at.floor_to(60*15), day.finished_at.floor_to(60*15)) %>
+            <% seconds = (day.finished_at - day.started_at).to_i %>
+            <% @total_seconds = @total_seconds.to_i + seconds %>
+          <% end %>
         </td>
         <td><%= day.note %></td>
         <td><%= day.overworkfinished_at.to_s(:hour) if day.overworkfinished_at.present? %></td><!-- 仮置きここから　-->
@@ -130,26 +157,38 @@
             <% end %></td>
                               
         <td><%= day.overwork_note %></td>
-        <td><!-- 残業 --><%= if day.overworkfinished_at.present? && day.overcheker.present? && day.overworkcheck == "0"
-                              '残業申請中'
-                            elsif day.overworkfinished_at.present? && day.overcheker.present? && day.overworkcheck.nil?
-                              '残業申請中'
-                            elsif day.overworkfinished_at.present? && day.overworkcheck == "1" && day.overconfirmation == ""
-                              '残業申請中'
-                            elsif day.overworkfinished_at.present? && day.overworkcheck == "1" && day.overconfirmation == "申請中"
-                              '残業申請中'
-                            elsif day.overworkfinished_at.present? && day.overworkcheck == "1" && day.overconfirmation == "承認"
-                              '残業申請申請済'
-                            elsif day.overworkfinished_at.present? && day.overworkcheck == "1" && day.overconfirmation == "否認"
-                              '残業申請否認'
-                            else
-                              ''
-                            end %> 
-            <!-- 勤怠編集-->
-            
-            </td><!-- ここまで -->
+        <td><!-- ここから残業 -->
+        <%= if day.overworkfinished_at.present? && day.overcheker.present? && day.overworkcheck == "0"
+              '残業申請中'
+            elsif day.overworkfinished_at.present? && day.overcheker.present? && day.overworkcheck.nil?
+              '残業申請中'
+            elsif day.overworkfinished_at.present? && day.overworkcheck == "1" && day.overconfirmation == ""
+              '残業申請中'
+            elsif day.overworkfinished_at.present? && day.overworkcheck == "1" && day.overconfirmation == "申請中"
+              '残業申請中'
+            elsif day.overworkfinished_at.present? && day.overworkcheck == "1" && day.overconfirmation == "承認"
+              '残業申請承認済'
+            elsif day.overworkfinished_at.present? && day.overworkcheck == "1" && day.overconfirmation == "否認"
+              '残業申請否認'
+            else
+              ''
+            end %> <!-- ここまで残業 -->
+            <!-- ここから勤怠編集-->
+        <%= if day.attendances_started_at.present? && day.attendances_cheker.present? && day.attendances_check == "0" || 
+               day.attendances_started_at.present? && day.attendances_cheker.present? && day.attendances_check.nil? ||
+               day.attendances_started_at.present? && day.attendances_cheker.present? && day.attendances_check == "1" && day.attendances_confirmation == ""||
+               day.attendances_started_at.present? && day.attendances_cheker.present? && day.attendances_check == "1" && day.attendances_confirmation == "申請中"
+               '勤怠編集申請中'
+            elsif day.attendances_started_at.present? && day.attendances_cheker.present? && day.attendances_check == "1" && day.attendances_confirmation == "承認"
+               '勤怠編集承認済み'
+            elsif day.attendances_started_at.present? && day.attendances_cheker.present? && day.attendances_check == "1" && day.attendances_confirmation == "否認"
+               '勤怠編集否認'
+            else
+              ''
+            end %><!-- ここまで勤怠編集 -->
+       </td>
       </tr>
-      <% end %>
+    <% end %>
     </tbody>
     <tfoot>
       <tr>

@@ -32,7 +32,7 @@ class AttendancesController < ApplicationController
                 attendance = Attendance.find(id)
                 attendance.update_attributes(item)
         end
-            flash[:success] =  "勤怠情報を更新しました。"
+            flash[:success] =  "勤怠情報の更新を申請しました。"
             redirect_to user_path(@user, params:{first_day: params[:date]})
         else
             flash[:danger] = "不正な時間入力がありました、再入力してください。"
@@ -48,6 +48,7 @@ class AttendancesController < ApplicationController
     @user = User.find(params[:user_id])
     @attendance = @user.attendances.find(params[:id])
     if @attendance.update_attributes(overwork_params)
+      @attendance.update_attributes(overcheck: nil)
       flash[:success] = "残業申請をしました。"
       redirect_to @user
     else
@@ -76,10 +77,30 @@ class AttendancesController < ApplicationController
       redirect_to @user
     end
   end
+  
+  def attendances_edit
+    @user = User.find(params[:id])
+    @users = User.all
+  end
+  
+  def attendances_update
+    @user = User.find(params[:id])
+    if attendances_update_invaflid?
+      attendancesupdate_params.each do |id, item|
+        attendance = Attendance.find(id)
+        attendance.update_attributes(item)
+      end
+      flash[:success] = "勤怠変更申請の変更を送信しました。"
+      redirect_to @user
+    else
+      flash[:danger] = "勤怠変更申請の変更ができませんでした。再度やり直してください。"
+      redirect_to @user
+    end
+  end
     private
     
     def attendances_params
-        params.permit(attendances: [:started_at, :finished_at, :note, :overtime, :instruction])[:attendances]
+        params.permit(attendances: [:attendances_started_at, :attendances_finished_at, :attendances_note, :attendancecheck, :attendances_cheker])[:attendances]
     end
     
     def overwork_params
@@ -89,4 +110,9 @@ class AttendancesController < ApplicationController
     def workupdate_params
       params.permit(attendances: [:overworkcheck, :overconfirmation])[:attendances]
     end
+    
+    def attendancesupdate_params
+      params.permit(attendances: [:attendances_confirmation, :attendances_check])[:attendances]
+    end
+    
 end

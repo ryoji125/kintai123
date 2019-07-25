@@ -10,9 +10,11 @@ Rails.application.routes.draw do
   get "users/:id/attendances/:date/edit", to: "attendances#edit", as: :edit_attendances
   patch 'users/:id/attendances/:date/update', to: 'attendances#update', as: :update_attendances
   get "go_work", to: "users#go_work", as: :go_work
-  delete "bases/:id", to: "bases#destroy", as: :destroy_base
-  get "users/:id/attendances/:id/index", to: "attendances#edit_work", as: :edit_work
-  patch "users/:id/attendances/:id/update_work", to: "attendances#update_work", as: :update_work
+  delete "bases/:id", to: "bases#destroy", as: :destroy_base #拠点削除
+  get "users/:id/attendances/:id/index", to: "attendances#edit_work", as: :edit_work  #残業申請veiw
+  patch "users/:id/attendances/:id/update_work", to: "attendances#update_work", as: :update_work #残業申請veiw
+  get "users/:id/attendances/:id/attendances_edit", to: "attendances#attendances_edit", as: :attendances_edit #勤怠変更申請veiw
+  patch "users/:id/attendances/:id/attendances_update", to: "attendances#attendances_update", as: :attendances_update
   resources :bases do
     member do
       get 'edit'

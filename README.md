@@ -8,14 +8,22 @@ ActiveRecord::Schema.define(version: 20190703100807) do
     t.integer "user_id"                         勤怠の中にありユーザーのidと同じようなもの勤怠の中にあるので色々な勤怠にいる
     t.datetime "created_at", null: false        その勤怠がみられた時に自動的に生成されている
     t.datetime "updated_at", null: false        その勤怠が更新時に自動的に生成されている
+    残業申請
     t.string "overwork_note"                    残業の業務内容処理に使用
     t.datetime "overworkfinished_at"            残業の終わる時間が入っている
     t.string "overcheck"                        1であれば仕事終わりは翌日それ以外は当日
     t.boolean "superior_id"                     今は使っていない
     t.string "overcheker"                       残業を誰に申請したかを入れている
-    t.string "attendancecheck"                  勤怠情報の変更を申請するときに使う
-    t.string "overworkcheck"                    残業の申請を変更するかどうかを入れる　　                        予定
-    t.string "overconfirmation"                 残業の確認状態を入れる(指示者確認)　申請中等　　　　　　　　　　予定
+    t.string "overworkcheck"                    残業の申請を変更するかどうかを入れる　　                        
+    t.string "overconfirmation"                 残業の確認状態を入れる(指示者確認)　申請中等
+    
+    勤怠変更
+    t.datetime "attendances_finished_at"   勤怠変更の時間を入れる (仕事を終わる時間)
+    t.datetime "attendances_started_at"    勤怠変更の時間を入れる (仕事を始める時間)
+    t.string "attendancecheck"             勤怠情報の変更を申請するときに使う
+    t.string "attendances_note"　　　　　　勤怠変更のの備考を入れる。
+    t.string "attendances_confirmation"    勤怠変更の申請等を入れる
+    t.string "attendances_cheker"          確認者を入れる。　上長
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 

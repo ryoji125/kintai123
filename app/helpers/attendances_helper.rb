@@ -46,14 +46,29 @@ module AttendancesHelper
       if item[:overworkcheck].present?
         next
       elsif item[:overworkcheck].blank? || item[:overconfirmation] == ""
-      workupdate = false
-      break
+        workupdate = false
+       break
       elsif awd
-      workupdate = false
-      break
+        workupdate = false
+        break
       end
     end
     return workupdate
+  end
+  
+  def attendances_update_invaflid?
+    attendances_update = true
+    attendancesupdate_params.each do |id, item|
+      if item[:attendances_check].present?
+        next
+      elsif item[:attendances_check].blank? || item[:attendances_confirmation] == ""
+      attendances_update = false
+        break
+      elsif item[:attendances_check].present? || item[:attendances_confirmation] == ""
+        break
+      end
+    end
+    return attendances_update
   end
   
   def working_times2(designated_work_end_time, overworkfinished_at)
