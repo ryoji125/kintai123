@@ -1,0 +1,62 @@
+<% provide(:class_text, 'basic-info') %>
+
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h1 class="modal-title">一ヶ月更新</h1>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <%= form_for(@user, url: month_update_update_path, method: :patch) do |f| %>
+            <% @users.each do |user| %>
+              <% attendances = Attendance.where(user_id: user.id) %>
+              <% attendances.each do |attendance| %>
+                <% if attendance.month_checker == @user.name %>
+                  <% if attendance.month_confirmation.nil? || attendance.month_ok_check == "0" || attendance.month_confirmation == "申請中" || attendance.month_confirmation == "" %>
+                    【<%= user.name %>からの残業申請】
+                    <% break %>
+                  <% end %>
+                <% end %>
+              <% end %>
+              <% attendances.each do |attendance| %>
+                <%= fields_for "attendances[]", attendance do |af| %>
+                  <% if attendance.month_checker == @user.name %>
+                    <% if attendance.month_confirmation.nil? || attendance.month_ok_check == "0" || attendance.month_confirmation == "申請中" || attendance.month_confirmation == "" %>
+                    <table class="table-bordered table-striped table-condensed">
+                      <thead>
+                        <tr>
+                          <td>月</td>
+                          <td>指示者確認㊞</td>
+                          <td>変更</td>
+                          <td>勤怠を確認</td>
+                        </tr>
+                        <tr>
+                          <td><%= attendance.worked_on.to_s(:month) %>月</td>
+                          <td>
+                            <%= af.select :month_confirmation, [["申請中", "申請中"], ["承認", "承認"], ["否認", "否認"], ["", ""],] ,class:"form-control" %>
+                          </td>
+                          <td><%= af.check_box :month_ok_check %></td>
+                          <td>
+                            <%= link_to "確認", user_path(params: {id: user.id, first_day: attendance.worked_on }), class: "btn btn-primary" %>
+                          </td>
+                        </tr>
+                      </thead>
+                    </table>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              <% end %>
+            <% end %>
+            <div class="modal-footer">
+              <%= f.submit "変更を送信する", class: "btn btn-primary" %>
+          <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

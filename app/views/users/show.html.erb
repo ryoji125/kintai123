@@ -58,7 +58,20 @@
       <td>時</td>
       <td>分</td>
     </tr>
-    <%= link_to "【所属長承認認証のお知らせ】","#",class: "" %><br>
+    <%# 一ヶ月申請はじめ　%>
+    <% count_at_month1 = Attendance.where(month_checker: @user.name, month_ok_check: nil).count %>
+    <% count_at_month2 = Attendance.where(month_checker: @user.name, month_ok_check: "0").count %>
+    <% count_at_month3 = Attendance.where(month_checker: @user.name, month_ok_check: "1", month_confirmation: "申請中").count %>
+    <% count_at_month4 = Attendance.where(month_checker: @user.name, month_ok_check: "1", month_confirmation: "").count %>
+    <% count_at_month = count_at_month1 + count_at_month2 + count_at_month3 + count_at_month4 %>
+    <% if count_at_month > 0 %>
+      <span style="color:#ff0000;"><%= link_to "【所属長承認認証のお知らせ】",month_update_edit_path(@user), remote: :true ,class: "color2" %><%= count_at_month %>件の通知があります。</span><br>
+    <% else %>
+      <%= link_to "【所属長承認認証のお知らせ】",month_update_edit_path(@user), remote: :true ,class: "" %><br>
+    <% end %>
+    <div id="month_attendances_update_check_edit" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+    <%# 一ヶ月申請終わり　%>
+    <%# 勤怠変更申請はじめ　%>
     <% count_at_attendances_edit = Attendance.where(attendances_cheker: @user.name, attendances_check: nil).count %>
     <% count_at_attendances_edit1 = Attendance.where(attendances_cheker: @user.name, attendances_check: "0").count %>
     <% count_at_attendances_edit2 = Attendance.where(attendances_cheker: @user.name, attendances_check: "1",  attendances_confirmation: "申請中").count %>
@@ -70,6 +83,8 @@
     <p class = "color1">【勤怠変更申請のお知らせ】</p>
     <% end %>
     <div id="attendances_edit" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+    <%# 勤怠変更申請終わり%>
+    <%# 残業申請はじめ%>
     <% count_at_overwork = Attendance.where(overcheker: @user.name,  overworkcheck: nil).count %>
     <% count_at_overwork1 = Attendance.where(overcheker: @user.name, overworkcheck: "0").count %>
     <% count_at_overwork2 = Attendance.where(overcheker: @user.name, overworkcheck: "1",  overconfirmation: "申請中").count %>
@@ -85,6 +100,7 @@
     <% end %>
     <br>
     <div id="edit_work" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+    <%# 残業申請終わり%>
     </thead>
     <%= link_to "勤怠を編集", edit_attendances_path(@user, @first_day), class: "btn btn-primary" %>
     <%= link_to "CSV出力", user_path(@user, params:{first_day: @first_day },format: :csv), class: "btn btn-primary" %><br>
@@ -197,7 +213,30 @@
         <td></td>
         <td>在社時間合計:<%= working_times_sum(@total_seconds) unless @total_seconds.nil? %></td>
         <td colspan = "5"></td>
-        <td>所属長承認</td>
+        <td>所属長承認: 
+        <% ok_sum = User.where(name: @user.name) && Attendance.where(worked_on: @first_day.to_s, month_confirmation: "承認",  ).count %>
+        <% not_ok_sum = User.where(name: @user.name) && Attendance.where(worked_on: @first_day.to_s, month_confirmation: "否認" ).count %>
+        <% no_sum = User.where(name: @user.name) && Attendance.where(worked_on: @first_day.to_s, month_checker: nil ).count %>
+        <%= if ok_sum > 0 
+        "承認済み"
+        elsif not_ok_sum > 0
+        "否認"
+        elsif no_sum > 0 
+        ""
+        else
+        "申請中"
+        end %>
+        <%= form_for(@user, url: month_attendances_update_path, method: :patch) do |f| %>
+        <% @dates.each do |day| %>
+        <%= fields_for "attendances[]", day do |af| %>
+          <%= af.collection_select :month_checker, User.where.not(superior: false, name: @user.name), :name, :name, :include_blank => true %>
+          <% af.select :month_ok_check, [["0"]],class:"form-control" %>
+          <%= f.submit "申請", class: "btn btn-primary" %>
+          
+        <% end %>
+        <% break %>
+        <% end %>
+        <% end %></td>
       </tr>
     </tfoot>
     </table>

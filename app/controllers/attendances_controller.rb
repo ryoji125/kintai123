@@ -52,7 +52,7 @@ class AttendancesController < ApplicationController
       flash[:success] = "残業申請をしました。"
       redirect_to @user
     else
-      flash[:danger] = "残業申請できませんでした。再度やり直してください。"
+      flash[:danger] = "残業申請できませんでした、再度やり直してください。"
       redirect_to @user
     end
   end
@@ -73,7 +73,7 @@ class AttendancesController < ApplicationController
       flash[:success] = "残業申請の変更を送信しました。"
       redirect_to @user
     else
-      flash[:danger] = "残業申請の変更ができませんでした。再度やり直してください。"
+      flash[:danger] = "残業申請の変更ができませんでした、再度やり直してください。"
       redirect_to @user
     end
   end
@@ -93,14 +93,50 @@ class AttendancesController < ApplicationController
       flash[:success] = "勤怠変更申請の変更を送信しました。"
       redirect_to @user
     else
-      flash[:danger] = "勤怠変更申請の変更ができませんでした。再度やり直してください。"
+      flash[:danger] = "勤怠変更申請の変更ができませんでした、再度やり直してください。"
+      redirect_to @user
+    end
+  end
+  
+  def month_attendances_update
+    @user = User.find(params[:id])
+    @attendance = @user.attendances.find(params[:id])
+    if month_update_invaflid?
+      monthupdate_params.each do |id, item|
+        attendance = Attendance.find(id)
+        attendance.update_attributes(item)
+      end
+      flash[:success] = "一ヶ月申請をしました。"
+      redirect_to @user
+    else
+      flash[:danger] = "申請の変更に失敗しました。再度やり直してください。"
+      redirect_to @user
+    end
+  end
+  
+  def month_attendances_update_check_edit
+    @user = User.find(params[:id])
+    @users = User.all
+  end
+  
+  def month_attendances_update_check_update
+    @user = User.find(params[:id])
+    if month_update_check_invaflid?
+      month_update_check_prams.each do |id, item|
+        attendance = Attendance.find(id)
+        attendance.update_attributes(item)
+      end
+      flash[:success] = "一ヶ月承認の申請の変更を送信しました。"
+      redirect_to @user
+    else
+      flash[:danger] = "申請の変更に失敗しました。再度やり直してください。"
       redirect_to @user
     end
   end
     private
     
     def attendances_params
-        params.permit(attendances: [:attendances_started_at, :attendances_finished_at, :attendances_note, :attendancecheck, :attendances_cheker])[:attendances]
+      params.permit(attendances: [:attendances_started_at, :attendances_finished_at, :attendances_note, :attendancecheck, :attendances_cheker])[:attendances]
     end
     
     def overwork_params
@@ -115,4 +151,11 @@ class AttendancesController < ApplicationController
       params.permit(attendances: [:attendances_confirmation, :attendances_check])[:attendances]
     end
     
+    def monthupdate_params
+      params.permit(attendances: [:month_checker, :month_ok_check])[:attendances]
+    end
+    
+    def month_update_check_prams
+      params.permit(attendances: [:month_confirmation, :month_ok_check])[:attendances]
+    end
 end

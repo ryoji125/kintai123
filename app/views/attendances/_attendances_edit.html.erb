@@ -1,5 +1,3 @@
-<% provide(:class_text, 'basic-info') %>
-
 <div class="modal-dialog modal-lg modal-dialog-center">
   <div class="modal-content">
     <div class="modal-header">
@@ -100,7 +98,7 @@
                               <%= af.check_box :attendances_check %>
                             </td>
                             <td>
-                              <%= link_to "確認", user_path(user, params:{first_day: params[:date]}), class: "btn btn-primary" %><!-- 確認を入れる -->
+                              <%= link_to "確認", user_path(params: {id: user.id, first_day: attendance.worked_on }), class: "btn btn-primary" %><!-- 確認を入れる -->
                             </td>
                           </tr>
                           </tbody>

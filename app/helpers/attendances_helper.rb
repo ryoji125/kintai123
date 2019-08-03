@@ -71,6 +71,32 @@ module AttendancesHelper
     return attendances_update
   end
   
+  def month_update_invaflid?
+    month_update = true
+    monthupdate_params.each do |id, item|
+    if item[:month_checker].present?
+      next
+    else
+      month_update = false
+      break
+    end
+  end
+    return month_update
+  end
+  
+  def month_update_check_invaflid?
+    month_update_check = true
+     month_update_check_prams.each do |id, item|
+       if item[:month_confirmation].present?
+         next
+       else
+         month_update_check = false
+         break
+       end
+    end
+    return month_update_check
+  end
+  
   def working_times2(designated_work_end_time, overworkfinished_at)
      format("%.2f", ((designated_work_end_time - overworkfinished_at)))
   end
