@@ -5,7 +5,7 @@ User.create!(name:  "上長A",
              superior: true,
              employee_number: "998",
              uid: "998",
-             affiliation: "管理")
+             affiliation: "管理部")
 User.create!(name:  "上長B",
              email: "email98@sample.com",
              password:              "password",
@@ -13,7 +13,7 @@ User.create!(name:  "上長B",
              superior: true,
              employee_number: "998",
              uid: "998",
-             affiliation: "管理")
+             affiliation: "管理部")
 User.create!(name:  "管理者",
              email: "email@sample.com",
              password:              "password",
@@ -21,7 +21,7 @@ User.create!(name:  "管理者",
              admin: true,
              employee_number: "1000",
              uid: "1000",
-             affiliation: "管理")
+             affiliation: "管理部")
 
 Faker::Config.locale = :ja
 5.times do |n|
