@@ -69,7 +69,7 @@
         <% if count_at_month > 0 %>
           <span style="color:#ff0000;"><%= link_to "【所属長承認認証のお知らせ】",month_update_edit_path(@user), remote: :true ,class: "color2" %><%= count_at_month %>件の通知があります。</span><br>
         <% else %>
-          <%= link_to "【所属長承認認証のお知らせ】",month_update_edit_path(@user), remote: :true ,class: "" %><br>
+          <p>【所属長承認認証のお知らせ】</p>
         <% end %>
       <div id="month_attendances_update_check_edit" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
       <% end %>
