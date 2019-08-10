@@ -2,25 +2,27 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"><span>×</span></button>
-				<h4 class="modal-title">タイトル</h4>
+				<h4 class="modal-title">拠点追加</h4>
 			</div>
 			  <div class="modal-body">
 			    <div class="row">
-				  <%= form_for(@base, remote:true) do |f| %>
+			    	<div class="col-md-6 col-md-offset-3">
+				  	<%= form_for(@base, remote:true) do |f| %>
 				
-			  	<%= f.label :number, class: "label-basic-info" %>
-          <%= f.text_field :number, class: "form-control" %>
+				  	<%= f.label :number, "拠点番号" %>
+  	        <%= f.text_field :number, class: "form-control" %>
 
-          <%= f.label :name, class: "label-basic-info" %>
-          <%= f.text_field :name, class: "form-control" %>
+    	      <%= f.label :name, "拠点名" %>
+      	    <%= f.text_field :name, class: "form-control" %>
 
-          <%= f.label :atype, class: "label-basic-info" %>
-          <%= f.text_field :atype, class: "form-control" %>
-			    <div class="center">
-			      <%= f.submit class: "btn btn-primary"%>
-				  <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
-			    </div>
+        	  <%= f.label :atype, "勤怠種類" %>
+          	<%= f.text_field :atype, class: "form-control" %>
+			    	<div class="center">
+			      	<%= f.submit class: "btn btn-primary"%>
+				  		
+			    	</div>
 			    <% end %>
+			    	</div>
 		      </div>
 	      </div>
 	 </div>

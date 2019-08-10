@@ -28,12 +28,15 @@ module AttendancesHelper
   def attendances_invaflid?
     attendances = true
     attendances_params.each do |id, item|
-      if item[:started_at].blank? && item[:finished_at].blank?
+      if item[:attendances_started_at].blank? && item[:attendances_finished_at].blank?
         next
-      elsif item[:started_at].blank? || item[:finished_at].blank?
+      elsif item[:attendances_started_at].blank? || item[:attendances_finished_at].blank?
         attendances = false
         break
-      elsif item[:started_at] > item[:finished_at]
+      elsif item[:attendances_started_at] > item[:attendances_finished_at] && item[:attendancecheck] == "0"
+        attendances = false
+        break
+      elsif item[:attendances_cheker].blank?
         attendances = false
         break
       end
@@ -43,14 +46,11 @@ module AttendancesHelper
   def workupdate_invaflid?
     workupdate = true
     workupdate_params.each do |id, item|
-      if item[:overworkcheck].present?
+      if item[:overworkcheck] == "1" && item[:overconfirmation] == "承認" || item[:overworkcheck] == "1" && item[:overconfirmation] == "否認"
         next
-      elsif item[:overworkcheck].blank? || item[:overconfirmation] == ""
+      elsif item[:overworkcheck] == "0"
         workupdate = false
        break
-      elsif awd
-        workupdate = false
-        break
       end
     end
     return workupdate
@@ -59,12 +59,10 @@ module AttendancesHelper
   def attendances_update_invaflid?
     attendances_update = true
     attendancesupdate_params.each do |id, item|
-      if item[:attendances_check].present?
+      if item[:attendances_check] == "1"
         next
-      elsif item[:attendances_check].blank? || item[:attendances_confirmation] == ""
+      elsif item[:attendances_check] == "0"
       attendances_update = false
-        break
-      elsif item[:attendances_check].present? || item[:attendances_confirmation] == ""
         break
       end
     end
@@ -87,9 +85,9 @@ module AttendancesHelper
   def month_update_check_invaflid?
     month_update_check = true
      month_update_check_prams.each do |id, item|
-       if item[:month_confirmation].present?
+       if item[:month_ok_check] == "1"
          next
-       else
+       elsif item[:month_ok_check] == "0"
          month_update_check = false
          break
        end

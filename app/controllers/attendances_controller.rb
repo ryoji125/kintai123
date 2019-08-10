@@ -1,4 +1,5 @@
 class AttendancesController < ApplicationController
+  before_action :no_admin_user,  only: [:edit]
     def create
     @user = User.find(params[:user_id])
     @attendance = @user.attendances.find_by(worked_on: Date.today)
@@ -100,7 +101,6 @@ class AttendancesController < ApplicationController
   
   def month_attendances_update
     @user = User.find(params[:id])
-    @attendance = @user.attendances.find(params[:id])
     if month_update_invaflid?
       monthupdate_params.each do |id, item|
         attendance = Attendance.find(id)
@@ -133,6 +133,13 @@ class AttendancesController < ApplicationController
       redirect_to @user
     end
   end
+  
+  def attendances_log
+    @user = User.find(params[:id])
+    @first_day = first_day(params[:date])
+    @last_day = @first_day.end_of_month
+    @dates = user_attendances_month_date
+  end
     private
     
     def attendances_params
@@ -157,5 +164,9 @@ class AttendancesController < ApplicationController
     
     def month_update_check_prams
       params.permit(attendances: [:month_confirmation, :month_ok_check])[:attendances]
+    end
+    
+    def no_admin_user
+      redirect_to(root_url) if current_user.admin?
     end
 end

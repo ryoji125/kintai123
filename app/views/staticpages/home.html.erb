@@ -1,13 +1,20 @@
-<% if logged_in? %>
-<div class= "jumbotron center">
-<h1> 勤怠システム </h1>
-<p> 今日も１日頑張りましょう　</p>
-<%= link_to "あなたの勤怠ページへ" , current_user %>
-<% else %>
 <% provide(:title, "") %>
-<div class= "jumbotron center">
-<h1>勤怠システム</h1>
-<%= link_to "ログイン",login_path, class: "btn btn-primary btn-lg" %>
-<p>アカウント作成は<%= link_to "こちら", signup_url %>から</p>
-</div>
+<% if logged_in? %>
+  <% if current_user.admin? %>
+    <div class= "jumbotron center">
+    <h1> 勤怠システム </h1>
+    <p> 今日も１日頑張りましょう　</p>
+  <%= link_to "ユーザー一覧へ" , users_path %>
+  <% else %>
+    <div class= "jumbotron center">
+    <h1> 勤怠システム </h1>
+    <p> 今日も１日頑張りましょう　</p>
+    <%= link_to "あなたの勤怠ページへ" , current_user %>
+  <% end %>
+<% else %>
+  <div class= "jumbotron center">
+  <h1>勤怠システム</h1>
+  <%= link_to "ログイン",login_path, class: "btn btn-primary btn-lg" %>
+  <p>アカウント作成は<%= link_to "こちら", signup_url %>から</p>
+  </div>
 <% end %>

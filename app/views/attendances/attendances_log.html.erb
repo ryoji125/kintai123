@@ -1,0 +1,27 @@
+<% provide(:title,'勤怠ログ')%>
+<h1>勤怠ログ</h1>
+<table class="table-bordered table-striped table-condensed">
+  <tr>
+    <td>日付</td>
+      <td>変更前出社時間</td>
+      <td>変更前退社時間</td>
+      <td>変更後出社時間</td>
+      <td>変更後退社時間</td>
+      <td>指示者</td>
+      <td>承認日</td>
+    </tr>
+    <% @dates.each do |day| %>
+      <% if day.attendances_check == "1" && day.attendances_confirmation == "承認" %>
+        <tr>
+          <td><%= day.worked_on.to_s(:date) %></td>
+          <td><%= day.started_at.to_s(:hourmin) if day.started_at.present? %></td>
+          <td><%= day.finished_at.to_s(:hourmin) if day.finished_at.present? %></td>
+          <td><%= day.attendances_started_at.to_s(:hour) if day.attendances_started_at.present? %>:<%= day.attendances_started_at.to_s(:min) if day.attendances_started_at.present? %></td>
+          <td><%= day.attendances_finished_at.to_s(:hour) if day.attendances_finished_at.present? %>:<%= day.attendances_finished_at.to_s(:min) if day.attendances_finished_at.present? %></td>
+          <td><%= day.attendances_cheker %></td>
+          <td><%= day.updated_at.to_s(:log) %></td>
+        </tr>
+      <% end %>
+    <% end %>
+
+</table>

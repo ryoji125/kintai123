@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy]
   before_action :correct_user,   only: [:edit, :update]
-  before_action :admin_user,     only: [:destroy, :edit_basic_info, :update_basic_info, :index]
+  before_action :admin_user,     only: [:destroy, :edit_basic_info, :update_basic_info, :index, :go_work, :basic_information]
+  before_action :no_admin_user,  only: [:show]
   require 'rounding'
   
   def index
@@ -15,26 +16,28 @@ class UsersController < ApplicationController
   def import
     # fileはtmpに自動で一時保存される
     User.import(params[:file])
+    flash[:success] = "ユーザー情報をインポートしました。"
     redirect_to users_url
   end
   
   def show
     @user = User.find(params[:id])
     @attendance = @user.attendances.find_by(worked_on: Date.today)
-    if @user == current_user || current_user.admin?
-    @first_day = first_day(params[:first_day])
-      @last_day = @first_day.end_of_month
-      (@first_day..@last_day).each do |day|
+      if @user == current_user || current_user.superior?
+      @first_day = first_day(params[:first_day])
+        @last_day = @first_day.end_of_month
+        (@first_day..@last_day).each do |day|
         unless @user.attendances.any? {|attendance| attendance.worked_on == day}
-      record = @user.attendances.build(worked_on: day)
-      record.save
+          record = @user.attendances.build(worked_on: day)
+          record.save
         end
       end
-    @dates = user_attendances_month_date
-    @worked_sum = @dates.where.not(started_at: nil).count
-    else
-    redirect_to root_url
-    end
+      @dates = user_attendances_month_date
+      @worked_sum = @dates.where.not(started_at: nil).count
+      @attendances_month = @user.attendances.find_by(worked_on: @first_day.to_s)
+      else
+      redirect_to root_url
+      end
     respond_to do |format|
       format.html
       format.csv do
@@ -105,10 +108,14 @@ class UsersController < ApplicationController
       render "edit_basic_info"
     end
   end
+  
+  def basic_information
+    
+  end
     private
     
     def user_params
-      params.require(:user).permit(:name,:email,:affiliation,:password,:password_confirmation)
+      params.require(:user).permit(:name,:email,:affiliation,:password,:password_confirmation,:uid,:work_time,:designated_work_start_time,:designated_work_end_time)
     end
     
     def basic_info_params
@@ -131,5 +138,9 @@ class UsersController < ApplicationController
   
     def admin_user
       redirect_to(root_url) unless current_user.admin?
+    end
+    
+    def no_admin_user
+      redirect_to(root_url) if current_user.admin?
     end
 end

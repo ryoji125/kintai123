@@ -1,7 +1,10 @@
 class BasesController < ApplicationController
-    
+
   def index
     @bases = Base.all
+    unless current_user.admin?
+      redirect_to root_url
+    end
   end
     
   def new 
@@ -56,7 +59,4 @@ class BasesController < ApplicationController
       params.require(:base).permit(:name, :atype, :number)
     end
     
-    def admin_user
-      redirect_to bases_url unless current_user.admin?
-    end
 end

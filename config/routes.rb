@@ -18,6 +18,8 @@ Rails.application.routes.draw do
   patch "users/:id/attendances/:id/month_attendances_update", to: "attendances#month_attendances_update", as: :month_attendances_update #一ヶ月申請update(申請)
   get "users/:id/attendances/:id/month_attendances_update_check_edit", to: "attendances#month_attendances_update_check_edit", as: :month_update_edit #一ヶ月申請承認veiw
   patch "users/:id/attendances/:id/month_attendances_update_check_edit", to: "attendances#month_attendances_update_check_update", as: :month_update_update #一ヶ月申請(承認)
+  get "users/:id/attendances/:date/log", to: "attendances#attendances_log", as: :attendances_log #勤怠ログview
+  get "users/basic_information", to: "users#basic_information", as: :basic_information
   resources :bases do
     member do
       get 'edit'
