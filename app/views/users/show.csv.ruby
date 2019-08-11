@@ -2,6 +2,7 @@ require 'csv'
 require 'date'
 
 CSV.generate do |csv|
+    csv << ["※CSV出力では、1分刻みで時間が記録されています、そのため、勤怠表と時間の差異がある可能性があります。"]
     csv_column_names = %w(日付 出社 退社)
     csv << csv_column_names
     @dates.each do |attendance|

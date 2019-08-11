@@ -3,6 +3,6 @@
   <td><%= base.name %></td>
   <td><%= base.atype %></td>
   <td><%= link_to "編集", edit_basis_path(base), remote: true, class: "btn btn-primary" %></td>
-  <td><%= link_to "削除", new_basis_path(@base.id), method: :delete, 
+  <td><%= link_to "削除", destroy_base_path(base.id), method: :delete, 
                          data: { confirm: "削除してよろしいですか？" } %></td>
 </tr>
